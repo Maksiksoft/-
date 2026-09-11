@@ -7,26 +7,73 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root{
-    --black:#0d0d0f;
-    --panel:#161418;
+    --black:#07060a;
+    --black-2:#0f0a14;
     --pink:#ff6fa5;
-    --pink-dim:#e8b7c8;
+    --pink-soft:#ff9dc4;
+    --pink-deep:#c94a80;
     --white:#ffffff;
-    --white-dim:rgba(255,255,255,.55);
-    --ok:#8fd4a8;
-    --no:#e28b8b;
+    --white-dim:rgba(255,255,255,.6);
+    --white-faint:rgba(255,255,255,.35);
+    --glass-bg:rgba(255,255,255,.05);
+    --glass-brd:rgba(255,255,255,.14);
+    --glass-brd-pink:rgba(255,111,165,.35);
   }
 
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
   html,body{
-    margin:0;
-    padding:0;
-    min-height:100%;
+    margin:0;padding:0;min-height:100%;
     background:var(--black);
     color:var(--white);
     font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ===== Анимированный градиентный фон ===== */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:-20%;
+    z-index:-2;
+    background:
+      radial-gradient(60% 55% at 20% 15%, rgba(255,111,165,.22), transparent 65%),
+      radial-gradient(55% 50% at 85% 25%, rgba(201,74,128,.18), transparent 60%),
+      radial-gradient(70% 60% at 50% 100%, rgba(255,157,196,.14), transparent 65%),
+      linear-gradient(180deg,#07060a 0%, #0d0810 50%, #07060a 100%);
+    filter:blur(10px);
+    animation:bgShift 18s ease-in-out infinite alternate;
+  }
+  @keyframes bgShift{
+    0%{transform:translate3d(0,0,0) scale(1);}
+    50%{transform:translate3d(-3%, 2%, 0) scale(1.06);}
+    100%{transform:translate3d(3%, -2%, 0) scale(1.03);}
+  }
+
+  /* ===== Слой падающих сердечек ===== */
+  .hearts{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+    overflow:hidden;
+  }
+  .hearts span{
+    position:absolute;
+    top:-10vh;
+    font-size:14px;
+    color:var(--pink);
+    opacity:0;
+    filter:drop-shadow(0 0 6px rgba(255,111,165,.7));
+    animation:fall linear infinite;
+    will-change:transform,opacity;
+  }
+  @keyframes fall{
+    0%   {transform:translate3d(0,-10vh,0) rotate(0deg); opacity:0;}
+    10%  {opacity:.9;}
+    90%  {opacity:.6;}
+    100% {transform:translate3d(30px,110vh,0) rotate(220deg); opacity:0;}
   }
 
   body{
@@ -36,94 +83,172 @@
   }
 
   .page{
+    position:relative;
     width:100%;
     max-width:440px;
-    padding:52px 26px 0;
+    padding:56px 26px 0;
     display:flex;
     flex-direction:column;
     align-items:center;
     text-align:center;
+    animation:pageIn 1s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes pageIn{
+    from{opacity:0; transform:translateY(18px);}
+    to{opacity:1; transform:none;}
   }
 
+  /* ===== Аватар ===== */
   .frame{
-    width:132px;
-    height:132px;
+    position:relative;
+    width:132px;height:132px;
     border-radius:50%;
     padding:2px;
-    background:linear-gradient(160deg, var(--pink), var(--panel) 75%);
-    margin-bottom:28px;
+    background:conic-gradient(from 0deg, var(--pink), var(--pink-deep), var(--pink-soft), var(--pink));
+    margin-bottom:30px;
+    animation:spin 8s linear infinite, floatY 5s ease-in-out infinite;
+    box-shadow:0 0 40px rgba(255,111,165,.35), 0 0 80px rgba(255,111,165,.15);
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes floatY{
+    0%,100%{margin-top:0;}
+    50%{margin-top:-8px;}
+  }
+  .frame::after{
+    content:"";
+    position:absolute;inset:-14px;
+    border-radius:50%;
+    border:1px solid rgba(255,111,165,.25);
+    animation:pulse 3s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes pulse{
+    0%{transform:scale(.9); opacity:.7;}
+    100%{transform:scale(1.25); opacity:0;}
   }
   .frame img{
-    width:100%;
-    height:100%;
+    width:100%;height:100%;
     object-fit:cover;
     border-radius:50%;
     display:block;
-    background:var(--panel);
+    background:var(--black-2);
+    animation:spinRev 8s linear infinite;
   }
+  @keyframes spinRev{to{transform:rotate(-360deg);}}
 
+  /* ===== Заголовки ===== */
   .eyebrow{
-    font-size:13px;
-    letter-spacing:.02em;
-    color:var(--pink-dim);
-    margin:0 0 10px;
+    font-size:12px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--pink-soft);
+    margin:0 0 14px;
     font-weight:500;
+    opacity:0;
+    animation:fadeUp .8s ease-out .2s forwards;
   }
 
   h1{
-    font-size:34px;
-    line-height:1.15;
-    margin:0 0 30px;
-    font-weight:600;
-    letter-spacing:-.01em;
-    color:var(--white);
+    font-size:38px;
+    line-height:1.12;
+    margin:0 0 32px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    opacity:0;
+    animation:fadeUp .9s ease-out .35s forwards;
   }
   h1 .accent{
-    color:var(--pink);
+    background:linear-gradient(120deg, var(--pink-soft), var(--pink), var(--pink-deep));
+    background-size:200% 200%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:shine 4s ease-in-out infinite;
+  }
+  @keyframes shine{
+    0%,100%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+  }
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:none;}
   }
 
+  /* ===== Письмо (стекло) ===== */
   .letter{
-    font-size:16px;
-    line-height:1.65;
-    color:rgba(255,255,255,.82);
+    position:relative;
+    width:100%;
+    max-width:380px;
+    padding:22px 22px;
+    font-size:15.5px;
+    line-height:1.7;
+    color:rgba(255,255,255,.86);
     text-align:left;
-    max-width:370px;
+    border-radius:22px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-brd);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:
+      0 10px 40px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    opacity:0;
+    animation:fadeUp .9s ease-out .5s forwards;
+    overflow:hidden;
   }
-  .letter p{margin:0 0 16px;}
+  .letter::before{
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.08) 50%, transparent 70%);
+    transform:translateX(-100%);
+    animation:glassSweep 6s ease-in-out 1.5s infinite;
+    pointer-events:none;
+  }
+  @keyframes glassSweep{
+    0%{transform:translateX(-100%);}
+    45%,100%{transform:translateX(100%);}
+  }
+  .letter p{margin:0 0 14px;}
   .letter p:last-child{margin-bottom:0;}
 
-  .divider{
-    width:100%;
-    max-width:370px;
-    height:1px;
-    background:rgba(255,255,255,.1);
-    margin:36px 0;
-  }
-
+  /* ===== Детали ===== */
   .details{
     width:100%;
-    max-width:370px;
+    max-width:380px;
+    margin-top:28px;
+    padding:8px 20px;
     text-align:left;
-    display:flex;
-    flex-direction:column;
-    gap:0;
+    border-radius:22px;
+    background:var(--glass-bg);
+    border:1px solid var(--glass-brd);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:
+      0 10px 40px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.08);
+    opacity:0;
+    animation:fadeUp .9s ease-out .7s forwards;
   }
   .detail-row{
     display:flex;
-    gap:20px;
+    gap:18px;
     align-items:baseline;
-    padding:15px 0;
+    padding:14px 0;
     border-bottom:1px solid rgba(255,255,255,.08);
+    transition:transform .3s ease;
   }
-  .detail-row:first-child{padding-top:0;}
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row:hover{transform:translateX(4px);}
   .detail-label{
     flex:0 0 84px;
-    font-size:12px;
-    letter-spacing:.02em;
-    color:var(--pink-dim);
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--pink-soft);
+    font-weight:600;
   }
   .detail-value{
-    font-size:16px;
+    font-size:15.5px;
     color:var(--white);
     font-weight:500;
   }
@@ -135,80 +260,134 @@
     margin-top:4px;
   }
 
+  /* ===== Кнопки ===== */
   .actions{
     width:100%;
-    max-width:370px;
-    margin-top:44px;
+    max-width:380px;
+    margin-top:32px;
     display:flex;
     flex-direction:column;
     gap:12px;
+    opacity:0;
+    animation:fadeUp .9s ease-out .9s forwards;
   }
 
   button.rsvp{
+    position:relative;
+    overflow:hidden;
     font-family:inherit;
     font-size:16px;
     font-weight:600;
     letter-spacing:.01em;
-    padding:16px 20px;
-    border-radius:14px;
+    padding:17px 20px;
+    border-radius:18px;
     border:1px solid transparent;
     cursor:pointer;
-    transition:transform .15s ease, opacity .15s ease;
+    transition:transform .15s ease, box-shadow .3s ease, opacity .2s ease;
+    -webkit-backdrop-filter:blur(10px);
+    backdrop-filter:blur(10px);
   }
-  button.rsvp:active{transform:scale(.98);}
+  button.rsvp:active{transform:scale(.97);}
+  button.rsvp::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.35) 50%, transparent 65%);
+    transform:translateX(-120%);
+    transition:transform .7s ease;
+    pointer-events:none;
+  }
+  button.rsvp:hover::after{transform:translateX(120%);}
 
   #btn-accept{
-    background:var(--pink);
-    color:var(--black);
+    background:linear-gradient(135deg, var(--pink-soft) 0%, var(--pink) 45%, var(--pink-deep) 100%);
+    background-size:200% 200%;
+    color:#170a10;
+    box-shadow:
+      0 10px 30px rgba(255,111,165,.45),
+      0 0 0 1px rgba(255,255,255,.15) inset;
+    animation:shine 5s ease-in-out infinite;
   }
+  #btn-accept:hover{
+    box-shadow:
+      0 14px 40px rgba(255,111,165,.6),
+      0 0 0 1px rgba(255,255,255,.2) inset;
+  }
+
   #btn-decline{
-    background:transparent;
+    background:var(--glass-bg);
     color:var(--white-dim);
-    border-color:rgba(255,255,255,.18);
+    border-color:var(--glass-brd);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  #btn-decline:hover{
+    color:var(--white);
+    border-color:var(--glass-brd-pink);
   }
 
   button.rsvp:disabled{
     opacity:.5;
     cursor:default;
     transform:none;
+    animation:none;
   }
+  button.rsvp:disabled::after{display:none;}
 
+  /* ===== Статус ===== */
   .status{
     margin-top:22px;
     font-size:14.5px;
-    min-height:20px;
+    min-height:22px;
+    font-weight:500;
+    transition:opacity .3s ease;
   }
-  .status.ok{color:var(--ok);}
-  .status.no{color:var(--no);}
-  .status.pending{color:var(--white-dim);}
+  .status.ok{color:var(--pink-soft); text-shadow:0 0 20px rgba(255,157,196,.5);}
+  .status.no{color:rgba(255,255,255,.7);}
+  .status.pending{color:var(--white-dim); animation:blink 1.4s ease-in-out infinite;}
+  @keyframes blink{
+    0%,100%{opacity:1;}
+    50%{opacity:.45;}
+  }
 
   .footer-note{
-    margin-top:48px;
-    font-size:12px;
-    color:rgba(255,255,255,.32);
+    margin-top:44px;
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--white-faint);
+    opacity:0;
+    animation:fadeUp .9s ease-out 1.1s forwards;
   }
 
   @media (max-width:360px){
-    h1{font-size:29px;}
-    .page{padding:40px 20px 0;}
+    h1{font-size:31px;}
+    .page{padding:42px 18px 0;}
+    .frame{width:112px;height:112px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
   }
 </style>
 </head>
 <body>
+
+  <!-- Падающие сердечки -->
+  <div class="hearts" id="hearts" aria-hidden="true"></div>
+
   <div class="page">
     <div class="frame">
       <img src="1.png" alt="Ксеня" onerror="this.style.opacity=0.001">
     </div>
 
     <p class="eyebrow">приглашение</p>
-    <h1>Ксеня <span class="accent">зовёт</span> на праздник</h1>
+    <h1>Ксеня <span class="accent">зовёт</span><br>на праздник</h1>
 
     <div class="letter">
       <p>Приглашаю тебя на свой праздник 🥂 Никаких душевных разговоров — только весёлый и приятный вайб, любимая музыка и позитив на максимум!</p>
       <p>А главное — с тебя быть с отличным настроением ❤️</p>
     </div>
-
-    <div class="divider"></div>
 
     <div class="details">
       <div class="detail-row">
@@ -238,6 +417,26 @@
   </div>
 
 <script>
+  // ===== Падающие сердечки (генерация) =====
+  (function spawnHearts(){
+    const layer = document.getElementById('hearts');
+    if (!layer) return;
+    const symbols = ['❤','♡','❥','♥'];
+    const count = 22;
+    for (let i = 0; i < count; i++){
+      const s = document.createElement('span');
+      s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+      s.style.left = (Math.random()*100) + 'vw';
+      s.style.fontSize = (10 + Math.random()*14) + 'px';
+      s.style.animationDuration = (7 + Math.random()*9) + 's';
+      s.style.animationDelay = (-Math.random()*16) + 's';
+      s.style.opacity = 0;
+      s.style.color = Math.random() > .5 ? 'var(--pink)' : 'var(--pink-soft)';
+      layer.appendChild(s);
+    }
+  })();
+
+  // ===== Логика RSVP (без изменений) =====
   const tg = window.Telegram ? window.Telegram.WebApp : null;
   if (tg) { tg.ready(); tg.expand(); }
 
@@ -250,8 +449,6 @@
     btnDecline.disabled = disabled;
   }
 
-  // Отправляет ответ прямо через Telegram (без своего сервера/домена).
-  // Telegram сам доставит эти данные боту как событие web_app_data.
   function sendRsvp(answer) {
     if (!tg) {
       statusEl.className = 'status no';
