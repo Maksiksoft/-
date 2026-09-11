@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Приглашение на праздник — Ксеня</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --black:#0d0d0f;
+    --panel:#161418;
+    --pink:#ff6fa5;
+    --pink-dim:#e8b7c8;
+    --white:#ffffff;
+    --white-dim:rgba(255,255,255,.55);
+    --ok:#8fd4a8;
+    --no:#e28b8b;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:var(--black);
+    color:var(--white);
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body{
+    display:flex;
+    justify-content:center;
+    padding:0 0 64px;
+  }
+
+  .page{
+    width:100%;
+    max-width:440px;
+    padding:52px 26px 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  .frame{
+    width:132px;
+    height:132px;
+    border-radius:50%;
+    padding:2px;
+    background:linear-gradient(160deg, var(--pink), var(--panel) 75%);
+    margin-bottom:28px;
+  }
+  .frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+    display:block;
+    background:var(--panel);
+  }
+
+  .eyebrow{
+    font-size:13px;
+    letter-spacing:.02em;
+    color:var(--pink-dim);
+    margin:0 0 10px;
+    font-weight:500;
+  }
+
+  h1{
+    font-size:34px;
+    line-height:1.15;
+    margin:0 0 30px;
+    font-weight:600;
+    letter-spacing:-.01em;
+    color:var(--white);
+  }
+  h1 .accent{
+    color:var(--pink);
+  }
+
+  .letter{
+    font-size:16px;
+    line-height:1.65;
+    color:rgba(255,255,255,.82);
+    text-align:left;
+    max-width:370px;
+  }
+  .letter p{margin:0 0 16px;}
+  .letter p:last-child{margin-bottom:0;}
+
+  .divider{
+    width:100%;
+    max-width:370px;
+    height:1px;
+    background:rgba(255,255,255,.1);
+    margin:36px 0;
+  }
+
+  .details{
+    width:100%;
+    max-width:370px;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .detail-row{
+    display:flex;
+    gap:20px;
+    align-items:baseline;
+    padding:15px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .detail-row:first-child{padding-top:0;}
+  .detail-label{
+    flex:0 0 84px;
+    font-size:12px;
+    letter-spacing:.02em;
+    color:var(--pink-dim);
+  }
+  .detail-value{
+    font-size:16px;
+    color:var(--white);
+    font-weight:500;
+  }
+  .detail-sub{
+    display:block;
+    font-size:12.5px;
+    font-weight:400;
+    color:var(--white-dim);
+    margin-top:4px;
+  }
+
+  .actions{
+    width:100%;
+    max-width:370px;
+    margin-top:44px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  button.rsvp{
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:.01em;
+    padding:16px 20px;
+    border-radius:14px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .15s ease, opacity .15s ease;
+  }
+  button.rsvp:active{transform:scale(.98);}
+
+  #btn-accept{
+    background:var(--pink);
+    color:var(--black);
+  }
+  #btn-decline{
+    background:transparent;
+    color:var(--white-dim);
+    border-color:rgba(255,255,255,.18);
+  }
+
+  button.rsvp:disabled{
+    opacity:.5;
+    cursor:default;
+    transform:none;
+  }
+
+  .status{
+    margin-top:22px;
+    font-size:14.5px;
+    min-height:20px;
+  }
+  .status.ok{color:var(--ok);}
+  .status.no{color:var(--no);}
+  .status.pending{color:var(--white-dim);}
+
+  .footer-note{
+    margin-top:48px;
+    font-size:12px;
+    color:rgba(255,255,255,.32);
+  }
+
+  @media (max-width:360px){
+    h1{font-size:29px;}
+    .page{padding:40px 20px 0;}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="frame">
+      <img src="photo.png" alt="Ксеня" onerror="this.style.opacity=0.001">
+    </div>
+
+    <p class="eyebrow">приглашение</p>
+    <h1>Ксеня <span class="accent">зовёт</span> на праздник</h1>
+
+    <div class="letter">
+      <p>Приглашаю тебя на свой праздник 🥂 Никаких душевных разговоров — только весёлый и приятный вайб, любимая музыка и позитив на максимум!</p>
+      <p>А главное — с тебя быть с отличным настроением ❤️</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="details">
+      <div class="detail-row">
+        <span class="detail-label">когда</span>
+        <span class="detail-value">13 сентября 2026</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">во сколько</span>
+        <span class="detail-value">сбор гостей в 17:00
+          <span class="detail-sub">без опозданий 🥹🙏🏻</span>
+        </span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">где</span>
+        <span class="detail-value">Пристанционная улица 10Д</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="rsvp" id="btn-accept">Приду 🥂</button>
+      <button class="rsvp" id="btn-decline">Не смогу</button>
+    </div>
+
+    <div class="status pending" id="status"></div>
+
+    <p class="footer-note">ответ виден только Ксене</p>
+  </div>
+
+<script>
+  const tg = window.Telegram ? window.Telegram.WebApp : null;
+  if (tg) { tg.ready(); tg.expand(); }
+
+  const statusEl = document.getElementById('status');
+  const btnAccept = document.getElementById('btn-accept');
+  const btnDecline = document.getElementById('btn-decline');
+
+  function setDisabled(disabled) {
+    btnAccept.disabled = disabled;
+    btnDecline.disabled = disabled;
+  }
+
+  // Отправляет ответ прямо через Telegram (без своего сервера/домена).
+  // Telegram сам доставит эти данные боту как событие web_app_data.
+  function sendRsvp(answer) {
+    if (!tg) {
+      statusEl.className = 'status no';
+      statusEl.textContent = 'Открой это приглашение внутри Telegram.';
+      return;
+    }
+
+    setDisabled(true);
+    statusEl.className = 'status pending';
+    statusEl.textContent = 'Отправляю ответ…';
+
+    try {
+      tg.sendData(JSON.stringify({ answer }));
+
+      if (answer === 'accepted') {
+        statusEl.className = 'status ok';
+        statusEl.textContent = 'Ура! Ждём тебя 🥂';
+      } else {
+        statusEl.className = 'status no';
+        statusEl.textContent = 'Жаль, что не получится. Ответ отправлен.';
+      }
+
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred(answer === 'accepted' ? 'success' : 'warning');
+      }
+
+      setTimeout(() => { try { tg.close(); } catch (e) {} }, 400);
+    } catch (err) {
+      statusEl.className = 'status no';
+      statusEl.textContent = 'Не получилось отправить, попробуй ещё раз.';
+      setDisabled(false);
+    }
+  }
+
+  btnAccept.addEventListener('click', () => sendRsvp('accepted'));
+  btnDecline.addEventListener('click', () => sendRsvp('declined'));
+</script>
+</body>
+</html>
